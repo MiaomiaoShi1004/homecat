@@ -33,11 +33,15 @@ docker compose up -d
 open http://localhost:8080
 ```
 
-## Over the internet
+## Viewing it
 
-Do not port-forward. `tailscale serve --bg 8080` gives you an HTTPS URL that only your own
-devices can reach. Friends get access via Tailscale device sharing, or just run their own
-copy. See [GUIDE.md](GUIDE.md#7-watch-it-from-outside-the-house).
+**At home:** nothing extra. `http://mac-mini.local:8080` from any device on your wifi.
+
+**From outside (optional):** your Mac mini is behind NAT, so something has to bridge that.
+Do not port-forward — that puts your living room on the public internet. `tailscale serve
+--bg 8080` is the laziest option that doesn't: no open port, no third party in the video
+path, and friends get access via revocable device sharing. WireGuard on your router is the
+same thing done by hand. See [GUIDE.md](GUIDE.md#7-watch-it-from-outside-the-house).
 
 ## Live-streaming notes
 
