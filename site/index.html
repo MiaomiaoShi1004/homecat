@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>homecat</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { color-scheme: light dark; --bg:#fff; --fg:#111; --muted:#666; --line:#e5e5e5; --card:#fafafa; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#111; --fg:#eee; --muted:#999; --line:#2a2a2a; --card:#1a1a1a; }
+  }
+  body { background:var(--bg); color:var(--fg); font:16px/1.5 system-ui,sans-serif; margin:0; padding:16px; max-width:960px; margin-inline:auto; }
+  h1 { font-size:1.4rem; margin:0 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 20px; }
+  #live { width:100%; border-radius:10px; background:#000; aspect-ratio:4/3; object-fit:contain; }
+  ul { list-style:none; padding:0; display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); }
+  li { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  li img { width:100%; display:block; aspect-ratio:4/3; object-fit:cover; background:#000; }
+  li a { display:block; color:inherit; text-decoration:none; }
+  li span { display:block; padding:8px 10px; font-size:.85rem; color:var(--muted); }
+  h2 { font-size:1rem; margin:28px 0 10px; }
+</style>
+
+<h1>🐈 homecat</h1>
+<p class="sub" id="status">connecting…</p>
+
+<img id="live" alt="live view">
+
+<h2>Cat sightings, last 7 days</h2>
+<ul id="events"></ul>
+
+<script type="module">
+const CAM = new URLSearchParams(location.search).get('camera') || 'litterbox';
+const status = document.getElementById('status');
+
+// MJPEG: works in every browser with no player library. Low fps by design.
+document.getElementById('live').src = `/api/${CAM}?fps=5&h=480`;
+
+try {
+  const events = await (await fetch(`/api/events?camera=${CAM}&label=cat&limit=60`)).json();
+  status.textContent = events.length
+    ? `${events.length} visits · last ${new Date(events[0].start_time * 1000).toLocaleString()}`
+    : 'no visits yet';
+  document.getElementById('events').innerHTML = events.map(e => `
+    <li><a href="/api/events/${e.id}/clip.mp4">
+      <img loading="lazy" src="/api/events/${e.id}/thumbnail.jpg" alt="">
+      <span>${new Date(e.start_time * 1000).toLocaleString()}${e.end_time ? ` · ${Math.round(e.end_time - e.start_time)}s` : ' · live'}</span>
+    </a></li>`).join('');
+} catch (err) {
+  status.textContent = `cannot reach Frigate: ${err.message}`;
+}
+</script>

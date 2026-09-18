@@ -6,10 +6,10 @@ Self-hosted cat monitoring. Samsung phone = camera, Mac mini = NVR. Nothing leav
 
 | PetKit feature | Here |
 | --- | --- |
-| Live view | Frigate UI / go2rtc WebRTC |
+| Live view | the dashboard at `:8080`, or Frigate's own UI |
 | Motion-triggered clips | Frigate event recording |
 | Pet detection (not motion) | Frigate object detection, `track: [cat]` |
-| Timeline of visits | Frigate Events UI + `/api/events` |
+| Timeline of visits | dashboard sightings grid, from `/api/events` |
 | Snapshots / thumbnails | Frigate snapshots |
 | 7-day history | `retain.days: 7` |
 | Push notifications | Frigate webhook -> ntfy (add when wanted) |
@@ -20,13 +20,22 @@ Self-hosted cat monitoring. Samsung phone = camera, Mac mini = NVR. Nothing leav
 
 ## Setup
 
-1. Phone: install an RTSP server app (IP Webcam, or [unal-ai/android-rtsp](https://github.com/unal-ai/android-rtsp)). Set 640x480, 5fps, low bitrate. Give the phone a static DHCP lease.
-2. Mac mini: `cp .env.example .env`, edit, `docker compose up -d`.
-3. Open https://mac-mini.local:8971.
+**[Full step-by-step guide → GUIDE.md](GUIDE.md)** — start there if you want it to work.
+
+Short version:
+
+```
+cp .env.example .env   # set a password
+# point config/config.yml at your phone's RTSP address
+docker compose up -d
+open http://localhost:8080
+```
 
 ## Over the internet
 
-Do not port-forward. Put both devices on Tailscale and point `phone.local` at the tailnet name.
+Do not port-forward. `tailscale serve --bg 8080` gives you an HTTPS URL that only your own
+devices can reach. Friends get access via Tailscale device sharing, or just run their own
+copy. See [GUIDE.md](GUIDE.md#7-watch-it-from-outside-the-house).
 
 ## Live-streaming notes
 

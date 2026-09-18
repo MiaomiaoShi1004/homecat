@@ -14,3 +14,13 @@ services:
       - "8971:8971"
     environment:
       FRIGATE_RTSP_PASSWORD: "${FRIGATE_RTSP_PASSWORD:?set it in .env}"
+
+  site:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on: [frigate]
+    volumes:
+      - ./site/index.html:/usr/share/nginx/html/index.html:ro
+      - ./site/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "127.0.0.1:8080:80"
