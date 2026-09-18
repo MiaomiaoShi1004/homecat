@@ -11,9 +11,9 @@ do not move on until it passes.
 
 ---
 
-## Step 0 — Ask the human for these three things first
+## Step 0 — Ask the human for these two things first
 
-Do not guess these. Ask for all three in one message, then wait:
+Do not guess these. Ask for both in one message, then wait:
 
 1. **The phone's RTSP URL.** The IP Webcam app on their Android phone shows an IP address
    on its main screen when the server is running. The URL is that IP plus the stream path,
@@ -21,8 +21,7 @@ Do not guess these. Ask for all three in one message, then wait:
    walk them through **GUIDE.md step 3** before continuing — you cannot do that part, it
    happens on the phone.
 2. **The username and password** they set in IP Webcam's Login/password screen.
-3. **Whether they want outside access** (step 6). This needs them to log into Tailscale in
-   a browser; you cannot do it alone.
+3. Nothing else. Two answers and you can do the rest.
 
 If they do not answer, stop and wait. Do not invent an IP address.
 
@@ -191,36 +190,20 @@ After any fix: `docker compose restart` then re-run the verify commands.
 
 ---
 
-## Step 6 — Outside access (only if they said yes in step 0)
+## Step 6 — Tell them how to view it
+
+On the same wifi, any device opens `http://mac-mini.local:8080`. If `.local` does not
+resolve on their phone, give them the IP instead:
 
 ```
-brew install tailscale
-sudo tailscale up
+ipconfig getifaddr en0
 ```
 
-`sudo tailscale up` prints a login URL and **waits**. The human must open that URL in a
-browser and sign in. Give them the URL and wait for them to confirm. Do not kill the
-command.
-
-Once they are signed in:
-
-```
-tailscale serve --bg 8080
-tailscale serve status
-```
-
-That prints an HTTPS URL like `https://mac-mini.tailnet-name.ts.net`. Give that URL to the
-human — it is how they watch from anywhere. They install Tailscale on their own phone and
-sign into the same account.
-
-**Do not** configure port forwarding, ngrok, cloudflared, a public tunnel, or bind the site
-container to `0.0.0.0`. This is a camera inside someone's home. The `127.0.0.1:` prefix on
-the port in `docker-compose.yml` is a safety measure — leave it.
-
-To share with a friend, tell the human: Tailscale admin console → Machines → this machine →
-Share. That is a browser task, not yours.
-
----
+If they ask about watching from outside the house: that needs a VPN or tunnel back to their
+home network and is out of scope for this repo. **Do not set up port forwarding, ngrok,
+cloudflared, or any public tunnel, and do not change the `127.0.0.1:` prefix on the port in
+`docker-compose.yml`.** This is a camera inside someone's home; exposing it publicly is not
+a call you make. Tell them it is possible and let them decide.
 
 ## Step 7 — Make it survive a reboot
 
@@ -237,11 +220,11 @@ the compose file — it is already set.
 
 Tell the human, in this order:
 
-1. The local URL: `http://localhost:8080`
-2. The Tailscale URL, if step 6 ran
-3. That the sightings grid will be **empty until a real cat walks into frame** — this is
+1. The local URL: `http://localhost:8080`, and `http://mac-mini.local:8080` from their
+   phone on the same wifi
+2. That the sightings grid will be **empty until a real cat walks into frame** — this is
    object detection, not motion, so it can take an hour or two. Not a bug.
-4. Anything you could not finish and why
+3. Anything you could not finish and why
 
 ---
 
@@ -253,5 +236,5 @@ Tell the human, in this order:
 - Do not `git push`. This machine is running the thing, not developing it.
 - Do not raise the resolution or fps "for better quality". 640x480 at 5fps is deliberate —
   it is what keeps CPU usage and a week of storage reasonable on a Mac mini.
-- Do not add a Coral TPU, a GPU detector, MQTT, or Home Assistant unless asked. The CPU
+- Do not add a Coral TPU, a GPU detector, MQTT, Home Assistant, or a VPN/tunnel unless asked. The CPU
   detector handles one low-res camera fine.

@@ -3,8 +3,8 @@
 Watch your cat from anywhere. Camera is an old Android phone, brain is a Mac mini,
 nothing is stored in anyone's cloud. About 45 minutes start to finish.
 
-You need: an Android phone you can leave plugged in, a Mac mini (or any machine with
-Docker), a free Tailscale account.
+You need: an Android phone you can leave plugged in, and a Mac mini (or any machine with
+Docker). Nothing else, no accounts.
 
 ---
 
@@ -108,38 +108,20 @@ Too many false alarms, or missing your cat? One number in `config/config.yml`:
 
 Raise toward 0.7 for fewer false alarms, lower toward 0.4 to catch a shy cat.
 
-## 7. Watch it from outside the house
+## 7. Watch it from your phone at home
 
-**Do not forward a port on your router.** A camera inside your home on the public internet
-gets found within hours — there are search engines for exactly this. The whole reason we
-left PetKit was to not do that.
+Any device on the same wifi: `http://mac-mini.local:8080`. If `.local` does not resolve,
+use the Mac mini's IP — `ipconfig getifaddr en0` prints it.
 
-Instead, Tailscale builds a private encrypted network that only your own devices can join.
+That covers the normal case. Watching from outside the house needs a VPN or tunnel back to
+your home network, which is its own project and not covered here. If you do set one up:
+**do not port-forward 8080 on your router.** A camera inside your home on the open internet
+gets found by scanners within hours — that is worse than the cloud service you left.
 
-On the Mac mini:
+### Letting a friend use it
 
-```
-brew install tailscale
-sudo tailscale up
-tailscale serve --bg 8080
-```
-
-That last command prints a URL like `https://mac-mini.tailnet-name.ts.net`. Install
-Tailscale on your own phone, log into the same account, and that URL works from anywhere in
-the world. Real HTTPS, no password to leak, nothing exposed publicly.
-
-### Letting a friend in
-
-Two ways, pick one.
-
-**Share the device** (they see only this page, best option):
-Tailscale admin console → Machines → your Mac mini → **Share** → send them the invite link.
-They accept, install Tailscale, and the URL works for them. Revoke any time from the same
-screen. They cannot see anything else on your network.
-
-**They run their own** (they have their own cat):
-They clone the repo and follow this guide from step 1. Nothing is shared, no accounts,
-no server of yours involved. That is the point of self-hosting.
+They clone the repo and follow this guide from step 1 on their own machine. Nothing is
+shared, no accounts, no server of yours involved. That is the point of self-hosting.
 
 ---
 

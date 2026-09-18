@@ -35,13 +35,12 @@ open http://localhost:8080
 
 ## Viewing it
 
-**At home:** nothing extra. `http://mac-mini.local:8080` from any device on your wifi.
+`http://mac-mini.local:8080` from any device on your wifi. That is the whole setup.
 
-**From outside (optional):** your Mac mini is behind NAT, so something has to bridge that.
-Do not port-forward — that puts your living room on the public internet. `tailscale serve
---bg 8080` is the laziest option that doesn't: no open port, no third party in the video
-path, and friends get access via revocable device sharing. WireGuard on your router is the
-same thing done by hand. See [GUIDE.md](GUIDE.md#7-watch-it-from-outside-the-house).
+Watching from outside your home is a separate problem and not part of this repo — your Mac
+mini is behind NAT, so it needs a VPN or tunnel of your choosing. One warning if you go
+there: do not port-forward port 8080 on your router. That puts an unauthenticated view of
+your home on the public internet, and it gets scanned and found.
 
 ## Live-streaming notes
 
