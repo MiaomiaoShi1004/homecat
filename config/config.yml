@@ -1,0 +1,47 @@
+mqtt:
+  enabled: false
+
+detectors:
+  cpu1:
+    type: cpu
+
+go2rtc:
+  streams:
+    litterbox:
+      - "rtsp://{FRIGATE_RTSP_PASSWORD}@phone.local:8554/live"
+
+cameras:
+  litterbox:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/litterbox
+          input_args: preset-rtsp-restream
+          roles: [detect, record]
+    detect:
+      width: 640
+      height: 480
+      fps: 5
+    objects:
+      track: [cat]
+      filters:
+        cat:
+          min_score: 0.55
+          threshold: 0.65
+    snapshots:
+      enabled: true
+      retain:
+        default: 7
+    record:
+      enabled: true
+      retain:
+        days: 0
+        mode: all
+      alerts:
+        retain:
+          days: 7
+      detections:
+        retain:
+          days: 7
+
+# ponytail: single camera, CPU detector. Add a Coral/OpenVINO detector only if
+# ffmpeg pegs the Mac; add cameras by copying the block.
