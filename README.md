@@ -22,6 +22,8 @@ Self-hosted cat monitoring. Samsung phone = camera, Mac mini = NVR. Nothing leav
 
 **[Full step-by-step guide → GUIDE.md](GUIDE.md)** — start there if you want it to work.
 
+Running this with Claude Code on the host machine? It follows [CLAUDE.md](CLAUDE.md) automatically.
+
 Short version:
 
 ```
